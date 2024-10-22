@@ -18,7 +18,7 @@ The [`batchProcess`](https://docs.karmanivero.us/batch-process/functions/batchPr
 npm i @karmaniverous/batch-process
 ```
 
-## Default Use Case
+## Usage
 
 ```ts
 import { batchProcess } from '@karmaniverous/batch-process';
@@ -69,15 +69,15 @@ The `options` parameter has the following properties:
 
 Default Batchable options are:
 
-| Option                     | Type                                     | Default     | Description                                                                                                         |
-| -------------------------- | ---------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------- |
-| `batchHandler`             | `(items: Item[]) => Promise<Output>`     | _required_  | Async function to process an individual batch.                                                                      |
-| `batchSize`                | `number`                                 | `25`        | The number of items to process in each batch.                                                                       |
-| `delayIncrement`           | `number`                                 | `100`       | The number of milliseconds to wait before retrying a failed batch, with 2x exponential backoff.                     |
-| `logger`                   | `Pick<Console, 'debug'>`                 | `console`   | Injected logger object. Must support `debug` method.                                                                |
-| `maxRetries`               | `number`                                 | `5`         | The number of times to retry a failed batch before throwing an exception.                                           |
-| `throttle`                 | `number`                                 | `10`        | The number of batches to process in parallel.                                                                       |
-| `unprocessedItemExtractor` | `(output: Output) => Item[] ⏐ undefined` | `undefined` | Function to extract unprocessed items from an individual batch output. If `undefined` no retries will be attempted. |
+| Option                     | Type                                     | Default      | Description                                                                                                         |
+| -------------------------- | ---------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `batchHandler`             | `(items: Item[]) => Promise<Output>`     | **required** | Async function to process an individual batch.                                                                      |
+| `batchSize`                | `number`                                 | `25`         | The number of items to process in each batch.                                                                       |
+| `delayIncrement`           | `number`                                 | `100`        | The number of milliseconds to wait before retrying a failed batch, with 2x exponential backoff.                     |
+| `logger`                   | `Pick<Console, 'debug'>`                 | `console`    | Injected logger object. Must support `debug` method.                                                                |
+| `maxRetries`               | `number`                                 | `5`          | The number of times to retry a failed batch before throwing an exception.                                           |
+| `throttle`                 | `number`                                 | `10`         | The number of batches to process in parallel.                                                                       |
+| `unprocessedItemExtractor` | `(output: Output) => Item[] ⏐ undefined` | `undefined`  | Function to extract unprocessed items from an individual batch output. If `undefined` no retries will be attempted. |
 
 ---
 
