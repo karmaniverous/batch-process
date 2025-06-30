@@ -2,7 +2,7 @@
 
 **In the real world, most async operations against large data sets need to be batched and throttled.**
 
-The [`batchProcess`](https://docs.karmanivero.us/batch-process/functions/batchProcess.html) function provides a simple, configurable utility for batching and throttling async operations.
+The [`batchProcess`](https://docs.karmanivero.us/batch-process/functions/batch_process.batchProcess.html) function provides a simple, configurable utility for batching and throttling async operations.
 
 `batchProcess` logs the progress of batch operations to `console` or to an injected logging dependency.
 
