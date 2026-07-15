@@ -17,7 +17,10 @@ const commonPlugins = (outDir: string) => [
   commonjsPlugin(),
   jsonPlugin(),
   nodeResolve(),
-  typescriptPlugin({ compilerOptions: { outDir } }),
+  typescriptPlugin({
+    compilerOptions: { outDir },
+    outputToFilesystem: true,
+  }),
 ];
 
 const commonAliases: Alias[] = [];
