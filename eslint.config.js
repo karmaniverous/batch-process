@@ -9,7 +9,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
-  mochaPlugin.configs.flat.recommended,
+  mochaPlugin.configs.recommended,
   {
     extends: [prettierPlugin],
     ignores: ['coverage/**/*', 'dist/**/*'],
