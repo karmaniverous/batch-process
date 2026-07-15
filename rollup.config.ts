@@ -1,6 +1,6 @@
 import { createRequire } from 'node:module';
 
-import aliasPlugin, { Alias } from '@rollup/plugin-alias';
+import aliasPlugin, { type Alias } from '@rollup/plugin-alias';
 import commonjsPlugin from '@rollup/plugin-commonjs';
 import jsonPlugin from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -24,8 +24,12 @@ const commonAliases: Alias[] = [];
 
 const commonInputOptions: InputOptions = {
   external: [
-    ...Object.keys((pkg.dependencies as Record<string, string>) ?? {}),
-    ...Object.keys((pkg.peerDependencies as Record<string, string>) ?? {}),
+    ...Object.keys(
+      (pkg.dependencies as Record<string, string> | undefined) ?? {},
+    ),
+    ...Object.keys(
+      (pkg.peerDependencies as Record<string, string> | undefined) ?? {},
+    ),
     'tslib',
   ],
   input: 'src/index.ts',
