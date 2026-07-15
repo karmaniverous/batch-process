@@ -1,10 +1,9 @@
-import { expect, use } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+/** @module batchProcess tests */
+
 import { setTimeout } from 'timers/promises';
+import { describe, expect, it } from 'vitest';
 
 import { batchProcess } from './batchProcess';
-
-use(chaiAsPromised);
 
 interface Item {
   maxRetries: number;
@@ -34,8 +33,8 @@ const batchHandler = async (items: Item[]): Promise<BatchOutput> => {
 const unprocessedItemExtractor = (output: BatchOutput): Item[] =>
   output.unprocessed;
 
-describe('batchProcess', function () {
-  it('should process a single batch', async function () {
+describe('batchProcess', () => {
+  it('should process a single batch', async () => {
     const items: Item[] = [
       { maxRetries: 0 },
       { maxRetries: 0 },
@@ -47,11 +46,13 @@ describe('batchProcess', function () {
       unprocessedItemExtractor,
     });
 
-    expect(output).to.have.length(1);
-    expect(output).to.have.deep.members([{ processed: 3, unprocessed: [] }]);
+    expect(output).toHaveLength(1);
+    expect(output).toEqual(
+      expect.arrayContaining([{ processed: 3, unprocessed: [] }]),
+    );
   });
 
-  it('should process a single batch with retry', async function () {
+  it('should process a single batch with retry', async () => {
     const items: Item[] = [
       { maxRetries: 0 },
       { maxRetries: 1 },
@@ -63,26 +64,32 @@ describe('batchProcess', function () {
       unprocessedItemExtractor,
     });
 
-    expect(output).to.have.length(2);
-    expect(output).to.have.deep.members([
-      { processed: 2, unprocessed: [{ maxRetries: 1, retry: 1 }] },
-      { processed: 1, unprocessed: [] },
-    ]);
+    expect(output).toHaveLength(2);
+    expect(output).toEqual(
+      expect.arrayContaining([
+        { processed: 2, unprocessed: [{ maxRetries: 1, retry: 1 }] },
+        { processed: 1, unprocessed: [] },
+      ]),
+    );
   });
 
-  it('should fail single batch exceeding max retries', function () {
+  it('should fail single batch exceeding max retries', async () => {
     const items: Item[] = [
       { maxRetries: 0 },
       { maxRetries: 4 },
       { maxRetries: 0 },
     ];
 
-    expect(
-      batchProcess(items, { batchHandler, unprocessedItemExtractor }),
-    ).to.be.eventually.rejectedWith('max retries exceeded');
+    await expect(
+      batchProcess(items, {
+        batchHandler,
+        maxRetries: 3,
+        unprocessedItemExtractor,
+      }),
+    ).rejects.toThrow();
   });
 
-  it('should process many batches', async function () {
+  it('should process many batches', async () => {
     const items: Item[] = [
       { maxRetries: 0 },
       { maxRetries: 0 },
@@ -95,14 +102,16 @@ describe('batchProcess', function () {
       unprocessedItemExtractor,
     });
 
-    expect(output).to.have.length(2);
-    expect(output).to.have.deep.members([
-      { processed: 2, unprocessed: [] },
-      { processed: 1, unprocessed: [] },
-    ]);
+    expect(output).toHaveLength(2);
+    expect(output).toEqual(
+      expect.arrayContaining([
+        { processed: 2, unprocessed: [] },
+        { processed: 1, unprocessed: [] },
+      ]),
+    );
   });
 
-  it('should process many batches with retry', async function () {
+  it('should process many batches with retry', async () => {
     const items: Item[] = [
       { maxRetries: 0 },
       { maxRetries: 0 },
@@ -115,15 +124,17 @@ describe('batchProcess', function () {
       unprocessedItemExtractor,
     });
 
-    expect(output).to.have.length(3);
-    expect(output).to.have.deep.members([
-      { processed: 2, unprocessed: [] },
-      { processed: 0, unprocessed: [{ maxRetries: 1, retry: 1 }] },
-      { processed: 1, unprocessed: [] },
-    ]);
+    expect(output).toHaveLength(3);
+    expect(output).toEqual(
+      expect.arrayContaining([
+        { processed: 2, unprocessed: [] },
+        { processed: 0, unprocessed: [{ maxRetries: 1, retry: 1 }] },
+        { processed: 1, unprocessed: [] },
+      ]),
+    );
   });
 
-  it('should process many batches with retry & throttling', async function () {
+  it('should process many batches with retry & throttling', async () => {
     const items: Item[] = [
       { maxRetries: 0 },
       { maxRetries: 0 },
@@ -137,11 +148,13 @@ describe('batchProcess', function () {
       unprocessedItemExtractor,
     });
 
-    expect(output).to.have.length(3);
-    expect(output).to.have.deep.members([
-      { processed: 2, unprocessed: [] },
-      { processed: 0, unprocessed: [{ maxRetries: 1, retry: 1 }] },
-      { processed: 1, unprocessed: [] },
-    ]);
+    expect(output).toHaveLength(3);
+    expect(output).toEqual(
+      expect.arrayContaining([
+        { processed: 2, unprocessed: [] },
+        { processed: 0, unprocessed: [{ maxRetries: 1, retry: 1 }] },
+        { processed: 1, unprocessed: [] },
+      ]),
+    );
   });
 });

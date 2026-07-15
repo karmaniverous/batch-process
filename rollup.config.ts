@@ -1,4 +1,6 @@
-import aliasPlugin, { Alias } from '@rollup/plugin-alias';
+import { createRequire } from 'node:module';
+
+import aliasPlugin, { type Alias } from '@rollup/plugin-alias';
 import commonjsPlugin from '@rollup/plugin-commonjs';
 import jsonPlugin from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -6,7 +8,8 @@ import typescriptPlugin from '@rollup/plugin-typescript';
 import type { InputOptions, RollupOptions } from 'rollup';
 import dtsPlugin from 'rollup-plugin-dts';
 
-import pkg from './package.json' assert { type: 'json' };
+const require = createRequire(import.meta.url);
+const pkg = require('./package.json') as Record<string, unknown>;
 
 const outputPath = `dist`;
 
@@ -19,12 +22,14 @@ const commonPlugins = [
 
 const commonAliases: Alias[] = [];
 
-type Package = Record<string, Record<string, string> | undefined>;
-
 const commonInputOptions: InputOptions = {
   external: [
-    ...Object.keys((pkg as unknown as Package).dependencies ?? {}),
-    ...Object.keys((pkg as unknown as Package).peerDependencies ?? {}),
+    ...Object.keys(
+      (pkg.dependencies as Record<string, string> | undefined) ?? {},
+    ),
+    ...Object.keys(
+      (pkg.peerDependencies as Record<string, string> | undefined) ?? {},
+    ),
     'tslib',
   ],
   input: 'src/index.ts',

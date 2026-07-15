@@ -22,6 +22,9 @@
     // "noLib": true,                                    /* Disable including any library files, including the default lib.d.ts. */
     // "reactNamespace": "",                             /* Specify the object invoked for 'createElement'. This only applies when targeting 'react' JSX emit. */
     "target": "ES2020" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "types": [
+      "node"
+    ] /* TS 6 no longer auto-includes @types/*; list ambient globals explicitly. */,
     // "useDefineForClassFields": true,                  /* Emit ECMAScript-standard-compliant class fields. */
 
     /* Modules */
