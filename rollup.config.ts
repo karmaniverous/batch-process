@@ -13,11 +13,11 @@ const pkg = require('./package.json') as Record<string, unknown>;
 
 const outputPath = `dist`;
 
-const commonPlugins = [
+const commonPlugins = (outDir: string) => [
   commonjsPlugin(),
   jsonPlugin(),
   nodeResolve(),
-  typescriptPlugin(),
+  typescriptPlugin({ compilerOptions: { outDir } }),
 ];
 
 const commonAliases: Alias[] = [];
@@ -33,13 +33,16 @@ const commonInputOptions: InputOptions = {
     'tslib',
   ],
   input: 'src/index.ts',
-  plugins: [aliasPlugin({ entries: commonAliases }), ...commonPlugins],
 };
 
 const config: RollupOptions[] = [
   // ESM output.
   {
     ...commonInputOptions,
+    plugins: [
+      aliasPlugin({ entries: commonAliases }),
+      ...commonPlugins(`${outputPath}/mjs`),
+    ],
     output: [
       {
         dir: `${outputPath}/mjs`,
@@ -53,6 +56,10 @@ const config: RollupOptions[] = [
   // CommonJS output.
   {
     ...commonInputOptions,
+    plugins: [
+      aliasPlugin({ entries: commonAliases }),
+      ...commonPlugins(`${outputPath}/cjs`),
+    ],
     output: [
       {
         dir: `${outputPath}/cjs`,
@@ -66,7 +73,11 @@ const config: RollupOptions[] = [
   // Type definitions output.
   {
     ...commonInputOptions,
-    plugins: [commonInputOptions.plugins, dtsPlugin()],
+    plugins: [
+      aliasPlugin({ entries: commonAliases }),
+      ...commonPlugins(outputPath),
+      dtsPlugin(),
+    ],
     output: [
       {
         extend: true,
